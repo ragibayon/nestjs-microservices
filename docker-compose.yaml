@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  reservations:
+    container_name: reservations-latest
+    build:
+      context: ./
+      dockerfile: ./apps/reservations/Dockerfile
+      target: development
+    command: npm run start:dev reservations
+    ports: 
+      - "5000:3000"
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    container_name: mongodb-reservations
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    env_file:
+      - .env.db
+    volumes:
+      - mongodb_data:/data/db
+      - ./initdb:/docker-entrypoint-initdb.d
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "mongosh --host mongodb-task-manager --quiet --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 'Health Check Successful' || echo 'Health Check Failed'",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+volumes:
+  mongodb_data:

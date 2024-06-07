@@ -11,6 +11,6 @@ async function bootstrap() {
     }),
   );
   app.useLogger(app.get(Logger));
-  await app.listen(5000);
+  await app.listen(3000);
 }
 bootstrap();
