@@ -8,6 +8,8 @@ services:
       dockerfile: ./apps/reservations/Dockerfile
       target: development
     command: npm run start:dev reservations
+    env_file:
+      - ./apps/reservations/.env
     ports: 
       - "5000:3000"
     volumes:
@@ -15,6 +17,28 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+    networks:
+      - default-network
+
+  auth:
+    container_name: auth
+    build:
+      context: ./
+      dockerfile: ./apps/auth/Dockerfile
+      target: development
+    command: npm run start:dev auth
+    env_file:
+      - ./apps/auth/.env
+    ports: 
+      - "5001:3001"
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - default-network
+
   mongodb:
     container_name: mongodb
     image: mongo:latest
@@ -24,7 +48,6 @@ services:
       - .env.db
     volumes:
       - mongodb_data:/data/db
-      - ./initdb:/docker-entrypoint-initdb.d
     healthcheck:
       test:
         [
@@ -35,5 +58,11 @@ services:
       timeout: 5s
       retries: 5
       start_period: 5s
+    networks:
+      - default-network
+
 volumes:
   mongodb_data:
+
+networks:
+  default-network:
