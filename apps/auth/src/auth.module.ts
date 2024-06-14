@@ -6,6 +6,7 @@ import { LoggerModule } from '@app/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { envValidationSchema } from './validators';
+import { JwtStrategy, LocalStrategy } from './strategies';
 
 @Module({
   imports: [
@@ -17,7 +18,6 @@ import { envValidationSchema } from './validators';
     UsersModule,
     LoggerModule,
     JwtModule.registerAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
@@ -28,6 +28,6 @@ import { envValidationSchema } from './validators';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
 })
 export class AuthModule {}
