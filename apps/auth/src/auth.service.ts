@@ -11,7 +11,7 @@ export class AuthService {
     private configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
-  async login(user: UserDocument, response: Response) {
+  async login(user: UserDocument, response: Response): Promise<void> {
     const tokenPayload: TokenPayload = {
       sub: user._id.toHexString(),
     };

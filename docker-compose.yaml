@@ -38,6 +38,25 @@ services:
         condition: service_healthy
     networks:
       - default-network
+    
+  payments:
+    container_name: payments
+    build:
+      context: ./
+      dockerfile: ./apps/payments/Dockerfile
+      target: development
+    command: npm run start:dev payments
+    env_file:
+      - ./apps/payments/.env
+    ports: 
+      - "5003:3003"
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - default-network
 
   mongodb:
     container_name: mongodb

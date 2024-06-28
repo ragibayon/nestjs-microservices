@@ -5,4 +5,6 @@ export const envValidationSchema = Joi.object({
   HTTP_PORT: Joi.number().required(),
   AUTH_HOST: Joi.string().required(),
   AUTH_TCP_PORT: Joi.number().required(),
+  PAYMENTS_HOST: Joi.string().required(),
+  PAYMENTS_TCP_PORT: Joi.number().required(),
 });

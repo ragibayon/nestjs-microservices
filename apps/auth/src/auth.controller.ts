@@ -1,4 +1,11 @@
-import { Controller, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Res,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard, LocalAuthGuard } from './guards';
 import { CurrentUser, UserDto } from '@app/common';
@@ -14,15 +21,16 @@ export class AuthController {
   @Post('login')
   async login(
     @CurrentUser() user: UserDocument,
-    @Res({ passthrough: true }) response: Response,
-  ) {
+    @Res({ passthrough: true }) response: Response, // pass the response to service without ending lifecycle
+  ): Promise<void> {
     await this.authService.login(user, response);
     response.send(user);
   }
 
   @UseGuards(JwtAuthGuard)
   @MessagePattern('authenticate')
-  async authenticate(@CurrentUser() user: UserDto) {
+  @UsePipes(new ValidationPipe())
+  async authenticate(@CurrentUser() user: UserDto): Promise<UserDto> {
     return user;
   }
 }
