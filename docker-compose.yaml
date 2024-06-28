@@ -19,7 +19,6 @@ services:
         condition: service_healthy
     networks:
       - default-network
-
   auth:
     container_name: auth
     build:
@@ -38,7 +37,6 @@ services:
         condition: service_healthy
     networks:
       - default-network
-    
   payments:
     container_name: payments
     build:
@@ -57,7 +55,24 @@ services:
         condition: service_healthy
     networks:
       - default-network
-
+  notifications:
+    container_name: notifications
+    build:
+      context: ./
+      dockerfile: ./apps/notifications/Dockerfile
+      target: development
+    command: npm run start:dev notifications
+    env_file:
+      - ./apps/notifications/.env
+    ports: 
+      - "5004:3004"
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - default-network
   mongodb:
     container_name: mongodb
     image: mongo:latest

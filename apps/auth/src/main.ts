@@ -20,7 +20,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   const logger = app.get(Logger);
   app.useLogger(logger);
-  const port = configService.get<number>('HTTP_PORT');
+  const port = configService.get<number>('PORT');
   await app.startAllMicroservices();
   await app.listen(port, () => {
     logger.log(`app listening on port: ${port}`);

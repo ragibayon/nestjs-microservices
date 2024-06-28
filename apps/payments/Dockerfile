@@ -13,8 +13,8 @@ RUN npm run build
 
 FROM node:alpine AS production
 
-ARG NDOE_ENV=production
-ENV NODE_ENV=${NDOE_ENV}
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /usr/src/app
 
